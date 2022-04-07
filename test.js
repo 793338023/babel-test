@@ -1,4 +1,6 @@
-const abc = '11';
-if (abc === '11') {
+const abc = "11";
+if (abc === "11") {
   console.log(abc);
 }
+
+export default abc;
