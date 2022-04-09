@@ -7,6 +7,7 @@ const file = fs.readFileSync(path.resolve(__dirname, "./test2.js"), "utf-8");
 // console.log(file);
 
 var result = babel.transformSync(file, {
+  presets: ["@babel/preset-env", "@babel/preset-react"],
   plugins: ["./babel/index"],
 });
 

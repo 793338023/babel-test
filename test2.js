@@ -1,4 +1,4 @@
-// __SIGN__;
+__SIGN__;
 import test from "./test";
 
 export default {
@@ -8,3 +8,22 @@ export default {
 };
 
 console.log(test);
+
+// sadaljldkjalksj
+function abc() { }
+
+
+{
+  abc ?
+    <Modal
+      className={style.modal}
+      maskCloseAble={false}
+      esc={false}
+      width={738}
+      visible={visible}
+      bodyStyle={{ overflow: 'auto' }}
+      destroy
+    >
+      <Content onClose={handleClose} originStep={step} agreement={agreement} />
+    </Modal> : null
+}
