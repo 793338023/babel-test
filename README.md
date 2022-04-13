@@ -29,7 +29,7 @@ presets 就是一组 plugins 的集合，所以都是插件
 plugins: ["./babel/index"],
 ```
 
-插件遵循这样的执行顺序，pre -> visitor -> post，而pre与post只接受一个入参state，以下有对其说明，不能操作ast，而visitor的节点 都有 enter 和 exit 的过程，默认使用 enter 阶段。
+插件遵循这样的执行顺序，pre -> visitor -> post，而 pre 与 post 只接受一个入参 state，以下有对其说明，不能操作 ast，而 visitor 的节点 都有 enter 和 exit 的过程，默认使用 enter 阶段。
 
 ```js
 module.exports = ({ types: t }) => {
@@ -66,7 +66,7 @@ module.exports = (babel) => {
   return {
     visitor: {
       ImportDeclaration() {
-        console.log("ImportDeclaration");
+        console.log('ImportDeclaration');
       },
     },
   };
@@ -105,9 +105,47 @@ path 上有很多工具方法，如替换节点，查找父节点，查找节点
 
 ast 树的遍历是[深度优先遍历](https://developer.51cto.com/article/614590.html)，而我们常知道的前序中序后序都是深度优先遍历，而 ast 的遍历类似前序遍历，而从文件上看就是从上到下执行，拿到节点后把节点内的所有子节点递归的形式遍历
 
+## 例子
+
+`data-if`指令实现
+
+```js
+module.exports = ({ types: t }) => {
+  return {
+    visitor: {
+      JSXAttribute(path) {
+        // data-if 指令
+        if (path.node.name.name === 'data-if') {
+          const parent = path.findParent((p) => {
+            return p.isJSXElement();
+          });
+
+          if (t.isJSXElement(parent.parentPath)) {
+            parent.replaceWith(
+              t.jsxExpressionContainer(
+                t.conditionalExpression(path.node.value.expression, parent.node, t.nullLiteral()),
+              ),
+            );
+          } else if (path.node.value.type === 'JSXExpressionContainer') {
+            parent.replaceWith(t.conditionalExpression(path.node.value.expression, parent.node, t.nullLiteral()));
+          }
+          path.remove();
+        }
+      },
+    },
+  };
+};
+```
+
+使用：
+
+```js
+<Test2 data-if={props.vis} />
+```
+
 ## 调试
 
-使用vscode生成`launch.json`，node执行修改下`program`执行位置，若npm添加`runtimeExecutable`与`runtimeArgs`
+使用 vscode 生成`launch.json`，node 执行修改下`program`执行位置，若 npm 添加`runtimeExecutable`与`runtimeArgs`
 
 ```json
 {
@@ -118,10 +156,7 @@ ast 树的遍历是[深度优先遍历](https://developer.51cto.com/article/6145
       "request": "launch",
       "name": "Launch Program",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "dev"
-      ]
+      "runtimeArgs": ["run", "dev"]
     }
   ]
 }

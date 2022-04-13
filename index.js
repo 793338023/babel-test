@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const babel = require("@babel/core");
 
-const file = fs.readFileSync(path.resolve(__dirname, "./test2.js"), "utf-8");
+const file = fs.readFileSync(path.resolve(__dirname, "./com2.js"), "utf-8");
 
 // console.log(file);
 
